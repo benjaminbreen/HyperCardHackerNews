@@ -18,6 +18,7 @@ interface HyperCardProps {
 const Icons = {
   Home: () => <svg width="20" height="20" viewBox="0 0 24 24" className="fill-current"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>,
   ArrowLeft: () => <svg width="20" height="20" viewBox="0 0 24 24" className="fill-current"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>,
+  ArrowRight: () => <svg width="20" height="20" viewBox="0 0 24 24" className="fill-current"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>,
   Triangle: () => <svg width="14" height="14" viewBox="0 0 10 10" className="fill-black"><path d="M1 9L5 1L9 9H1Z"/></svg>
 };
 
@@ -45,6 +46,27 @@ const HyperCard: React.FC<HyperCardProps> = ({ onTitleMouseDown, fontClass, acti
       canvas.height = canvas.parentElement?.clientHeight || 720;
     }
   }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (stackMode === 'blank') return;
+      if (activeTool !== 'browse') return;
+
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        soundService.playNav();
+        handleNext();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        soundService.playNav();
+        handlePrev();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [viewState, currentItem, activeList, page, activeTool, stackMode]);
 
   // Handle Go Menu Commands
   useEffect(() => {
@@ -338,16 +360,28 @@ const HyperCard: React.FC<HyperCardProps> = ({ onTitleMouseDown, fontClass, acti
               </div>
 
               {/* Nav Icons */}
-              <div className="flex justify-start gap-3 mb-4 pt-1 font-chicago">
-                 {viewState !== ViewState.HOME && (
-                   <button onClick={goHome} className="border-2 border-black px-3 py-1 text-sm hover:bg-black hover:text-white shadow-[2px_2px_0_0_black] flex items-center gap-2 active:translate-y-px active:shadow-none transition-none">
-                      <Icons.Home /> Home
-                   </button>
-                 )}
-                 {history.length > 0 && (
-                   <button onClick={goBack} className="border-2 border-black px-3 py-1 text-sm hover:bg-black hover:text-white shadow-[2px_2px_0_0_black] flex items-center gap-2 active:translate-y-px active:shadow-none transition-none">
-                      <Icons.ArrowLeft /> Back
-                   </button>
+              <div className="flex justify-between items-center mb-4 pt-1 font-chicago">
+                 <div className="flex gap-3">
+                   {viewState !== ViewState.HOME && (
+                     <button onClick={goHome} className="border-2 border-black px-3 py-1 text-sm hover:bg-black hover:text-white shadow-[2px_2px_0_0_black] flex items-center gap-2 active:translate-y-px active:shadow-none transition-none">
+                        <Icons.Home /> Home
+                     </button>
+                   )}
+                   {history.length > 0 && (
+                     <button onClick={goBack} className="border-2 border-black px-3 py-1 text-sm hover:bg-black hover:text-white shadow-[2px_2px_0_0_black] flex items-center gap-2 active:translate-y-px active:shadow-none transition-none">
+                        <Icons.ArrowLeft /> Back
+                     </button>
+                   )}
+                 </div>
+                 {viewState === ViewState.DETAIL && (
+                   <div className="flex gap-3">
+                     <button onClick={handlePrev} className="border-2 border-black px-3 py-1 text-sm hover:bg-black hover:text-white shadow-[2px_2px_0_0_black] flex items-center gap-2 active:translate-y-px active:shadow-none transition-none">
+                        <Icons.ArrowLeft /> Prev
+                     </button>
+                     <button onClick={handleNext} className="border-2 border-black px-3 py-1 text-sm hover:bg-black hover:text-white shadow-[2px_2px_0_0_black] flex items-center gap-2 active:translate-y-px active:shadow-none transition-none">
+                        Next <Icons.ArrowRight />
+                     </button>
+                   </div>
                  )}
               </div>
 
@@ -502,41 +536,41 @@ const HyperCard: React.FC<HyperCardProps> = ({ onTitleMouseDown, fontClass, acti
             onClick={(e) => e.stopPropagation()}
           >
             <div className="h-8 border-b-2 border-black flex items-center justify-center bg-[#e0e0e0] px-2">
-              <span className="font-chicago text-base md:text-lg">Hacker News Guidelines</span>
+              <span className="font-chicago text-base md:text-lg">HackerNews BBS - User Guidelines</span>
             </div>
             <div className="flex-1 overflow-y-scroll p-3 md:p-6 text-sm md:text-base leading-relaxed">
-              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1">What to Submit</h3>
-              <p className="mb-3"><strong>On-Topic:</strong> Anything that good hackers would find interesting. That includes more than hacking and startups. If you had to reduce it to a sentence: anything that gratifies one's intellectual curiosity.</p>
-              <p className="mb-4"><strong>Off-Topic:</strong> Most stories about politics, crime, sports, or celebrities. Videos of pratfalls or cute animal pictures. If they'd cover it on TV news, it's probably off-topic.</p>
+              <p className="mb-4 text-center italic">Welcome to the Information Superhighway! Est. December 1994</p>
 
-              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1 mt-4">In Submissions</h3>
+              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1">What to Post</h3>
+              <p className="mb-2"><strong>GOOD STUFF:</strong> Stories about the World Wide Web, Mosaic browsers, Pentium processors, or your latest BeOS experiments. Discussions of Netscape vs. Internet Explorer. Anything relating to modems faster than 14.4k. DOOM secrets. Perl scripts. </p>
+              <p className="mb-3"><strong>BAD STUFF:</strong> Flame wars about vi vs. emacs (we know emacs is better). Spam about "FREE CD-ROMS!" Anything requiring RealPlayer to view. AOL keywords.</p>
+
+              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1 mt-4">Posting Etiquette</h3>
               <ul className="list-disc pl-5 space-y-2 mb-4">
-                <li>Please don't use uppercase or exclamation points in titles.</li>
-                <li>Submit the original source when possible.</li>
-                <li>Don't use HN primarily for promotion.</li>
-                <li>Remove the site name from titles—it will be displayed automatically.</li>
-                <li>Please use the original title unless it's misleading or linkbait.</li>
-                <li>Mark videos and PDFs by appending [video] or [pdf] to the title.</li>
-                <li>Don't delete and repost stories.</li>
-                <li>Don't solicit upvotes or comments.</li>
+                <li>Please limit subject lines to 72 characters (for Unix mail compatibility)</li>
+                <li>Don't post the same story to multiple newsgroups</li>
+                <li>Remember: bandwidth costs money! Keep posts under 50KB</li>
+                <li>If linking to a website, please note estimated download time on a 28.8 modem</li>
+                <li>Tag multimedia posts with [GIF], [MPEG], or [WAV]</li>
+                <li>ROT13 encode spoilers about Jurassic Park or The X-Files</li>
               </ul>
 
-              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1 mt-4">In Comments</h3>
+              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1 mt-4">Discussion Guidelines</h3>
               <ul className="list-disc pl-5 space-y-2 mb-4">
-                <li><strong>Be kind.</strong> Don't be snarky.</li>
-                <li>When disagreeing, reply to the argument instead of calling names.</li>
-                <li>Please respond to the strongest interpretation of what someone says.</li>
-                <li>Assume good faith.</li>
-                <li>Eschew flamebait. Avoid generic tangents.</li>
-                <li>Please don't post shallow dismissals of other people's work.</li>
-                <li>Don't use Hacker News for political or ideological battle.</li>
-                <li>Please don't pick the most provocative thing to complain about.</li>
-                <li>Don't use uppercase for emphasis. Use *asterisks* instead.</li>
-                <li>If a story is spam or off-topic, flag it—don't comment about it.</li>
-                <li>Please don't complain about tangential annoyances like website formats.</li>
+                <li>Be excellent to each other (and party on, dudes)</li>
+                <li>No SHOUTING IN ALL CAPS unless your Caps Lock is genuinely stuck</li>
+                <li>Avoid excessive use of emoticons ;-) :-) :-P</li>
+                <li>If you must flame someone, at least make it witty</li>
+                <li>Remember the human (they might be reading this on a VT220 terminal)</li>
+                <li>Don't feed the trolls (they live under BBS bridges)</li>
+                <li>Respect others' .sig files, even if they're 4 lines of ASCII art</li>
               </ul>
 
-              <p className="text-xs italic mt-4 pt-3 border-t border-dotted border-gray-400">These guidelines help keep Hacker News a place for curious conversation and intellectual exploration. For more information, contact hn@ycombinator.com</p>
+              <p className="text-xs mt-4 pt-3 border-t border-dotted border-gray-400">
+                <strong>Technical Support:</strong> If you're having trouble viewing this in Lynx, that's your problem.<br/>
+                <strong>Trivia:</strong> This BBS runs on a 486DX2/66 with 16MB of RAM!<br/>
+                <strong>Legal:</strong> All contents © 1994. Redistribution via Gopher is encouraged.
+              </p>
             </div>
             <div className="border-t-2 border-black p-3 flex justify-center bg-white">
               <button
