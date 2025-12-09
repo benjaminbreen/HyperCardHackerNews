@@ -539,37 +539,27 @@ const HyperCard: React.FC<HyperCardProps> = ({ onTitleMouseDown, fontClass, acti
               <span className="font-chicago text-base md:text-lg">HackerNews BBS - User Guidelines</span>
             </div>
             <div className="flex-1 overflow-y-scroll p-3 md:p-6 text-sm md:text-base leading-relaxed">
-              <p className="mb-4 text-center italic">Welcome to the Information Superhighway! Est. December 1994</p>
+              <p className="mb-4 italic">This system is written in Common Lisp (ANSI X3.226-1994).</p>
 
-              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1">What to Post</h3>
-              <p className="mb-2"><strong>GOOD STUFF:</strong> Stories about the World Wide Web, Mosaic browsers, Pentium processors, or your latest BeOS experiments. Discussions of Netscape vs. Internet Explorer. Anything relating to modems faster than 14.4k. DOOM secrets. Perl scripts. </p>
-              <p className="mb-3"><strong>BAD STUFF:</strong> Flame wars about vi vs. emacs (we know emacs is better). Spam about "FREE CD-ROMS!" Anything requiring RealPlayer to view. AOL keywords.</p>
+              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1">What to Submit</h3>
+              <p className="mb-3"><strong>On-Topic:</strong> Anything that gratifies one's intellectual curiosity. Computing, science, mathematics. The World Wide Web and networked systems. Thoughtful discussion of technology and its implications.</p>
+              <p className="mb-4"><strong>Off-Topic:</strong> This isn't the Ricky Lake show. We want intellectual substance, not National Enquirer-type pablum. If you saw it on Hard Copy or Inside Edition, it probably doesn't belong here.</p>
 
-              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1 mt-4">Posting Etiquette</h3>
-              <ul className="list-disc pl-5 space-y-2 mb-4">
-                <li>Please limit subject lines to 72 characters (for Unix mail compatibility)</li>
-                <li>Don't post the same story to multiple newsgroups</li>
-                <li>Remember: bandwidth costs money! Keep posts under 50KB</li>
-                <li>If linking to a website, please note estimated download time on a 28.8 modem</li>
-                <li>Tag multimedia posts with [GIF], [MPEG], or [WAV]</li>
-                <li>ROT13 encode spoilers about Jurassic Park or The X-Files</li>
-              </ul>
+              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1 mt-4">In Submissions</h3>
+              <p className="mb-3">Please submit the original source when possible. If posting from a print publication, cite it properly.</p>
+              <p className="mb-3">Don't editorialize titles. Use the original title from the source.</p>
+              <p className="mb-3">This isn't your personal billboard. Don't use the system primarily for self-promotion.</p>
+              <p className="mb-4">Don't delete and repost. If something doesn't get attention, that's how it goes.</p>
 
-              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1 mt-4">Discussion Guidelines</h3>
-              <ul className="list-disc pl-5 space-y-2 mb-4">
-                <li>Be excellent to each other (and party on, dudes)</li>
-                <li>No SHOUTING IN ALL CAPS unless your Caps Lock is genuinely stuck</li>
-                <li>Avoid excessive use of emoticons ;-) :-) :-P</li>
-                <li>If you must flame someone, at least make it witty</li>
-                <li>Remember the human (they might be reading this on a VT220 terminal)</li>
-                <li>Don't feed the trolls (they live under BBS bridges)</li>
-                <li>Respect others' .sig files, even if they're 4 lines of ASCII art</li>
-              </ul>
+              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1 mt-4">In Comments</h3>
+              <p className="mb-3"><strong>Be civil.</strong> No ad hominem attacks. When you disagree, respond to the argument, not the person.</p>
+              <p className="mb-3">Comments should get more thoughtful and substantive as a topic gets more divisive, not less.</p>
+              <p className="mb-3">Please respond to the strongest plausible interpretation of what someone says, not a weaker one that's easier to criticize. Assume good faith.</p>
+              <p className="mb-3">Eschew flamebait. Don't post shallow dismissals, especially of other people's work.</p>
+              <p className="mb-4">The spirit here is intellectual curiosity. We're not interested in ideological battle or point-scoring.</p>
 
               <p className="text-xs mt-4 pt-3 border-t border-dotted border-gray-400">
-                <strong>Technical Support:</strong> If you're having trouble viewing this in Lynx, that's your problem.<br/>
-                <strong>Trivia:</strong> This BBS runs on a 486DX2/66 with 16MB of RAM!<br/>
-                <strong>Legal:</strong> All contents © 1994. Redistribution via Gopher is encouraged.
+                These guidelines help maintain a signal-to-noise ratio conducive to substantive discussion.
               </p>
             </div>
             <div className="border-t-2 border-black p-3 flex justify-center bg-white">
