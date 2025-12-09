@@ -115,12 +115,12 @@ const MenuBar: React.FC<MenuBarProps> = ({ onAboutClick, onCalculatorClick, onPu
   ];
 
   return (
-    <div className="fixed top-0 left-0 w-full h-[28px] bg-white border-b-2 border-black z-50 flex items-center justify-between select-none font-chicago text-[15px] px-3 shadow-md">
+    <div className="fixed top-0 left-0 w-full h-[28px] bg-white border-b-2 border-black z-50 flex items-center justify-between select-none font-chicago text-[13px] md:text-[15px] px-1 md:px-3 shadow-md">
       <div className="flex items-center h-full">
         {menuItems.map((menu) => (
           <div key={menu.name} className="relative group h-full flex items-center">
-            <button 
-              className={`px-4 h-full focus:outline-none active:bg-black active:text-white ${openMenu === menu.name ? 'bg-black text-white' : 'text-black'}`}
+            <button
+              className={`px-2 md:px-4 h-full focus:outline-none active:bg-black active:text-white ${openMenu === menu.name ? 'bg-black text-white' : 'text-black'}`}
               onMouseDown={() => handleMenuClick(menu.name)}
               onMouseEnter={() => { if (openMenu) setOpenMenu(menu.name); }}
             >

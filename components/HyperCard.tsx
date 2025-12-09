@@ -243,16 +243,38 @@ const HyperCard: React.FC<HyperCardProps> = ({ onTitleMouseDown, fontClass, acti
   const contentPointerEvents = activeTool === 'browse' ? 'pointer-events-auto' : 'pointer-events-none';
 
   return (
-    <div className={`w-[900px] h-[720px] bg-white border-2 border-black window-shadow flex flex-col select-none shadow-[2px_2px_0_0_#000000] relative ${getCursorClass()}`}>
+    <div className={`w-full h-full max-w-[900px] max-h-[720px] md:w-[900px] md:h-[720px] bg-white border-2 border-black window-shadow flex flex-col select-none shadow-[2px_2px_0_0_#000000] relative ${getCursorClass()}`}>
       
       {/* PAINTING LAYER */}
-      <canvas 
+      <canvas
          ref={canvasRef}
          className={`absolute inset-0 z-50 ${activeTool === 'browse' ? 'pointer-events-none' : 'pointer-events-auto'}`}
          onMouseDown={onMouseDownDraw}
          onMouseMove={draw}
          onMouseUp={stopDrawing}
          onMouseLeave={stopDrawing}
+         onTouchStart={(e) => {
+           e.preventDefault();
+           const touch = e.touches[0];
+           const mouseEvent = new MouseEvent('mousedown', {
+             clientX: touch.clientX,
+             clientY: touch.clientY
+           });
+           onMouseDownDraw(mouseEvent as any);
+         }}
+         onTouchMove={(e) => {
+           e.preventDefault();
+           const touch = e.touches[0];
+           const mouseEvent = new MouseEvent('mousemove', {
+             clientX: touch.clientX,
+             clientY: touch.clientY
+           });
+           draw(mouseEvent as any);
+         }}
+         onTouchEnd={(e) => {
+           e.preventDefault();
+           stopDrawing();
+         }}
       />
 
       {/* Title Bar */}
@@ -283,30 +305,30 @@ const HyperCard: React.FC<HyperCardProps> = ({ onTitleMouseDown, fontClass, acti
              {/* Totally blank canvas area, tools work here */}
           </div>
       ) : (
-          <div className={`flex-1 overflow-hidden relative p-6 flex flex-col z-0 ${contentPointerEvents}`}>
+          <div className={`flex-1 overflow-hidden relative p-2 md:p-6 flex flex-col z-0 ${contentPointerEvents}`}>
               {/* Header Section */}
-              <div className="border-b-[4px] border-black mb-2 pb-2 flex justify-between items-end">
-                <div>
-                  <h1 className="text-4xl font-chicago leading-none tracking-tight">HyperCardHackerNews</h1>
-                  <div className={`text-lg mt-2 pl-1 ${fontClass}`}>Public Access • Dec 9, 1994</div>
+              <div className="border-b-[4px] border-black mb-2 pb-2 flex justify-between items-end flex-wrap md:flex-nowrap gap-2">
+                <div className="flex-1">
+                  <h1 className="text-2xl md:text-4xl font-chicago leading-none tracking-tight">HyperCardHackerNews</h1>
+                  <div className={`text-sm md:text-lg mt-1 md:mt-2 pl-1 ${fontClass}`}>Public Access • Dec 9, 1994</div>
                 </div>
                 <div className="flex flex-col items-end gap-1">
-                   <div className="flex gap-[-2px] items-end font-chicago text-sm">
-                       <button 
+                   <div className="flex gap-[-2px] items-end font-chicago text-xs md:text-sm">
+                       <button
                          onClick={() => handleTabChange('top')}
-                         className={`border-2 border-black border-b-0 px-3 py-1 mr-1 shadow-[2px_0_0_0_black] ${activeList === 'top' ? 'bg-black text-white' : 'bg-white hover:bg-gray-200'}`}
+                         className={`border-2 border-black border-b-0 px-2 md:px-3 py-1 mr-1 shadow-[2px_0_0_0_black] ${activeList === 'top' ? 'bg-black text-white' : 'bg-white hover:bg-gray-200'}`}
                        >
                          Top
                        </button>
-                       <button 
+                       <button
                          onClick={() => handleTabChange('new')}
-                         className={`border-2 border-black border-b-0 px-3 py-1 shadow-[2px_0_0_0_black] ${activeList === 'new' ? 'bg-black text-white' : 'bg-white hover:bg-gray-200'}`}
+                         className={`border-2 border-black border-b-0 px-2 md:px-3 py-1 shadow-[2px_0_0_0_black] ${activeList === 'new' ? 'bg-black text-white' : 'bg-white hover:bg-gray-200'}`}
                        >
                          New
                        </button>
                    </div>
-                   <div className="border-[3px] border-black p-2 mb-1 shadow-[3px_3px_0_0_black]">
-                      <div className="font-chicago text-3xl px-2">HN</div>
+                   <div className="border-[3px] border-black p-1 md:p-2 mb-1 shadow-[3px_3px_0_0_black]">
+                      <div className="font-chicago text-2xl md:text-3xl px-1 md:px-2">HN</div>
                    </div>
                 </div>
               </div>

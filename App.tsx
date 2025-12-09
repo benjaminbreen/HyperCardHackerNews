@@ -54,9 +54,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!isStackInitialized) {
-      setStackPos({ 
-        x: Math.max(0, (window.innerWidth - 900) / 2), 
-        y: Math.max(40, (window.innerHeight - 720) / 2) 
+      const isMobile = window.innerWidth < 768;
+      setStackPos({
+        x: isMobile ? 0 : Math.max(0, (window.innerWidth - 900) / 2),
+        y: isMobile ? 0 : Math.max(40, (window.innerHeight - 720) / 2)
       });
       setIsStackInitialized(true);
     }
@@ -154,10 +155,10 @@ const App: React.FC = () => {
       />
       
       {/* Desktop Area */}
-      <div className="flex-1 relative w-full h-full">
+      <div className="flex-1 relative w-full h-full pb-[44px] md:pb-0">
         
-        {/* Desktop Icons */}
-        <div className="absolute right-6 top-16 flex flex-col items-end gap-8 group cursor-mac-default z-0">
+        {/* Desktop Icons - Hidden on mobile */}
+        <div className="hidden md:flex absolute right-6 top-16 flex-col items-end gap-8 group cursor-mac-default z-0">
           <div className="flex flex-col items-center w-24 text-center" onClick={() => soundService.playClick()}>
              <div className="w-12 h-14 bg-white border-2 border-black mb-1 relative shadow-[3px_3px_0_0_black] active:invert">
                <div className="absolute inset-1.5 border border-dotted border-black"></div>
@@ -186,13 +187,27 @@ const App: React.FC = () => {
 
         {/* Draggable Accessories */}
         {isCalculatorOpen && (
-          <div style={{ position: 'absolute', left: calcPos.x, top: calcPos.y, zIndex: dragState.id === 'calculator' ? 50 : 40 }}>
+          <div
+            className="md:absolute fixed inset-0 md:inset-auto flex items-center justify-center md:block"
+            style={{
+              left: window.innerWidth >= 768 ? calcPos.x : 0,
+              top: window.innerWidth >= 768 ? calcPos.y : 0,
+              zIndex: dragState.id === 'calculator' ? 50 : 40
+            }}
+          >
              <Calculator onClose={() => setCalculatorOpen(false)} onMouseDown={(e) => startDrag(e, 'calculator')} />
           </div>
         )}
 
         {isPuzzleOpen && (
-          <div style={{ position: 'absolute', left: puzzlePos.x, top: puzzlePos.y, zIndex: dragState.id === 'puzzle' ? 50 : 40 }}>
+          <div
+            className="md:absolute fixed inset-0 md:inset-auto flex items-center justify-center md:block"
+            style={{
+              left: window.innerWidth >= 768 ? puzzlePos.x : 0,
+              top: window.innerWidth >= 768 ? puzzlePos.y : 0,
+              zIndex: dragState.id === 'puzzle' ? 50 : 40
+            }}
+          >
              <Puzzle onClose={() => setPuzzleOpen(false)} onMouseDown={(e) => startDrag(e, 'puzzle')} />
           </div>
         )}
@@ -206,16 +221,19 @@ const App: React.FC = () => {
 
         {/* Draggable HyperCard Window */}
         {isStackInitialized && activeStackMode && (
-          <div 
-            style={{ 
-              position: 'absolute', 
-              left: stackPos.x, 
+          <div
+            className="w-full h-full md:w-auto md:h-auto"
+            style={{
+              position: 'absolute',
+              left: stackPos.x,
               top: stackPos.y,
+              right: window.innerWidth < 768 ? 0 : 'auto',
+              bottom: window.innerWidth < 768 ? 0 : 'auto',
               zIndex: dragState.id === 'stack' ? 30 : 10
             }}
           >
-            <HyperCard 
-              onTitleMouseDown={(e) => startDrag(e, 'stack')} 
+            <HyperCard
+              onTitleMouseDown={(e) => startDrag(e, 'stack')}
               fontClass={currentFont}
               activeTool={activeTool}
               goCommand={goCommand}
@@ -228,41 +246,42 @@ const App: React.FC = () => {
 
         {/* Draggable Tool Palette - Remains visible if showToolPalette is true, even if stack is closed */}
         {showToolPalette && (
-          <div 
-            className="absolute w-[78px] bg-white border-2 border-black shadow-[3px_3px_0_0_black] flex flex-col select-none"
-            style={{ 
-              left: palettePos.x, 
-              top: palettePos.y,
-              zIndex: dragState.id === 'palette' ? 31 : 20 
+          <div
+            className="md:absolute fixed bottom-0 left-0 md:left-auto md:bottom-auto md:w-[78px] w-full bg-white border-2 border-black shadow-[3px_3px_0_0_black] md:flex-col flex-row select-none"
+            style={{
+              left: window.innerWidth >= 768 ? palettePos.x : 0,
+              top: window.innerWidth >= 768 ? palettePos.y : 'auto',
+              bottom: window.innerWidth < 768 ? 0 : 'auto',
+              zIndex: dragState.id === 'palette' ? 31 : 20
             }}
           >
-            <div 
-              className="h-4 border-b-2 border-black flex items-center justify-center relative bg-white bg-[repeating-linear-gradient(90deg,black,black_1px,white_1px,white_2px)] opacity-50 cursor-grab active:cursor-grabbing"
+            <div
+              className="hidden md:flex h-4 border-b-2 border-black items-center justify-center relative bg-white bg-[repeating-linear-gradient(90deg,black,black_1px,white_1px,white_2px)] opacity-50 cursor-grab active:cursor-grabbing"
               onMouseDown={(e) => startDrag(e, 'palette')}
             >
             </div>
-            
-            {/* Tools Grid (2 rows x 3 cols) */}
-            <div className="grid grid-cols-3 gap-[1px] bg-black p-[1px]">
-              <div onClick={() => handleToolClick('browse')} className={`h-[24px] flex items-center justify-center cursor-default ${activeTool === 'browse' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Browse /></div>
-              <div onClick={() => handleToolClick('button')} className={`h-[24px] flex items-center justify-center cursor-default ${activeTool === 'button' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Button /></div>
-              <div onClick={() => handleToolClick('field')} className={`h-[24px] flex items-center justify-center cursor-default ${activeTool === 'field' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Field /></div>
-              <div onClick={() => handleToolClick('text')} className={`h-[24px] flex items-center justify-center cursor-default ${activeTool === 'text' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Text /></div>
-              <div onClick={() => handleToolClick('pencil')} className={`h-[24px] flex items-center justify-center cursor-default ${activeTool === 'pencil' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Pencil /></div>
-              <div onClick={() => handleToolClick('eraser')} className={`h-[24px] flex items-center justify-center cursor-default ${activeTool === 'eraser' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Eraser /></div>
+
+            {/* Tools Grid (2 rows x 3 cols on desktop, 1 row x 6 cols on mobile) */}
+            <div className="grid md:grid-cols-3 grid-cols-6 gap-[1px] bg-black p-[1px]">
+              <div onClick={() => handleToolClick('browse')} className={`md:h-[24px] h-[40px] flex items-center justify-center cursor-default ${activeTool === 'browse' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Browse /></div>
+              <div onClick={() => handleToolClick('button')} className={`md:h-[24px] h-[40px] flex items-center justify-center cursor-default ${activeTool === 'button' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Button /></div>
+              <div onClick={() => handleToolClick('field')} className={`md:h-[24px] h-[40px] flex items-center justify-center cursor-default ${activeTool === 'field' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Field /></div>
+              <div onClick={() => handleToolClick('text')} className={`md:h-[24px] h-[40px] flex items-center justify-center cursor-default ${activeTool === 'text' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Text /></div>
+              <div onClick={() => handleToolClick('pencil')} className={`md:h-[24px] h-[40px] flex items-center justify-center cursor-default ${activeTool === 'pencil' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Pencil /></div>
+              <div onClick={() => handleToolClick('eraser')} className={`md:h-[24px] h-[40px] flex items-center justify-center cursor-default ${activeTool === 'eraser' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-200'}`}><ToolIcons.Eraser /></div>
             </div>
           </div>
         )}
 
         {/* About Dialog Modal */}
         {isAboutOpen && (
-          <div className="absolute inset-0 z-[60] flex items-center justify-center">
+          <div className="absolute inset-0 z-[60] flex items-center justify-center p-4">
              <div className="absolute inset-0 bg-transparent" onClick={() => soundService.playError()}></div>
-             <div className="bg-white border-2 border-black w-[500px] shadow-[4px_4px_0_0_black] flex flex-col font-geneva z-[70]">
+             <div className="bg-white border-2 border-black w-full max-w-[500px] shadow-[4px_4px_0_0_black] flex flex-col font-geneva z-[70]">
                 <div className="h-8 border-b-2 border-black flex items-center justify-center bg-[#e0e0e0]">
-                   <span className="font-chicago text-lg">About HyperCardHackerNews</span>
+                   <span className="font-chicago text-base md:text-lg">About HyperCardHackerNews</span>
                 </div>
-                <div className="p-8 flex flex-col items-center">
+                <div className="p-4 md:p-8 flex flex-col items-center">
                    <div className="w-16 h-16 mb-6 border-2 border-black flex items-center justify-center shadow-[3px_3px_0_0_black]">
                       <span className="text-4xl"></span>
                    </div>
