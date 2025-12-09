@@ -31,6 +31,7 @@ const HyperCard: React.FC<HyperCardProps> = ({ onTitleMouseDown, fontClass, acti
   const [page, setPage] = useState<number>(1);
   const [expandedArticle, setExpandedArticle] = useState<boolean>(false);
   const [showRecent, setShowRecent] = useState(false);
+  const [showGuidelines, setShowGuidelines] = useState(false);
 
   // Canvas State
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -327,7 +328,10 @@ const HyperCard: React.FC<HyperCardProps> = ({ onTitleMouseDown, fontClass, acti
                          New
                        </button>
                    </div>
-                   <div className="border-[3px] border-black p-1 md:p-2 mb-1 shadow-[3px_3px_0_0_black]">
+                   <div
+                      className="border-[3px] border-black p-1 md:p-2 mb-1 shadow-[3px_3px_0_0_black] cursor-pointer hover:bg-gray-100 active:translate-y-px active:shadow-[1px_1px_0_0_black]"
+                      onClick={() => { if(activeTool === 'browse') { soundService.playClick(); setShowGuidelines(true); }}}
+                   >
                       <div className="font-chicago text-2xl md:text-3xl px-1 md:px-2">HN</div>
                    </div>
                 </div>
@@ -488,6 +492,62 @@ const HyperCard: React.FC<HyperCardProps> = ({ onTitleMouseDown, fontClass, acti
               </div>
 
           </div>
+      )}
+
+      {/* Guidelines Modal */}
+      {showGuidelines && (
+        <div className="absolute inset-0 z-[60] flex items-center justify-center p-2 md:p-4" onClick={() => { soundService.playClick(); setShowGuidelines(false); }}>
+          <div
+            className="bg-white border-2 border-black w-full max-w-[600px] max-h-[90vh] shadow-[4px_4px_0_0_black] flex flex-col font-geneva z-[70]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="h-8 border-b-2 border-black flex items-center justify-center bg-[#e0e0e0] px-2">
+              <span className="font-chicago text-base md:text-lg">Hacker News Guidelines</span>
+            </div>
+            <div className="flex-1 overflow-y-scroll p-3 md:p-6 text-sm md:text-base leading-relaxed">
+              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1">What to Submit</h3>
+              <p className="mb-3"><strong>On-Topic:</strong> Anything that good hackers would find interesting. That includes more than hacking and startups. If you had to reduce it to a sentence: anything that gratifies one's intellectual curiosity.</p>
+              <p className="mb-4"><strong>Off-Topic:</strong> Most stories about politics, crime, sports, or celebrities. Videos of pratfalls or cute animal pictures. If they'd cover it on TV news, it's probably off-topic.</p>
+
+              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1 mt-4">In Submissions</h3>
+              <ul className="list-disc pl-5 space-y-2 mb-4">
+                <li>Please don't use uppercase or exclamation points in titles.</li>
+                <li>Submit the original source when possible.</li>
+                <li>Don't use HN primarily for promotion.</li>
+                <li>Remove the site name from titles—it will be displayed automatically.</li>
+                <li>Please use the original title unless it's misleading or linkbait.</li>
+                <li>Mark videos and PDFs by appending [video] or [pdf] to the title.</li>
+                <li>Don't delete and repost stories.</li>
+                <li>Don't solicit upvotes or comments.</li>
+              </ul>
+
+              <h3 className="font-chicago text-lg mb-3 border-b border-black pb-1 mt-4">In Comments</h3>
+              <ul className="list-disc pl-5 space-y-2 mb-4">
+                <li><strong>Be kind.</strong> Don't be snarky.</li>
+                <li>When disagreeing, reply to the argument instead of calling names.</li>
+                <li>Please respond to the strongest interpretation of what someone says.</li>
+                <li>Assume good faith.</li>
+                <li>Eschew flamebait. Avoid generic tangents.</li>
+                <li>Please don't post shallow dismissals of other people's work.</li>
+                <li>Don't use Hacker News for political or ideological battle.</li>
+                <li>Please don't pick the most provocative thing to complain about.</li>
+                <li>Don't use uppercase for emphasis. Use *asterisks* instead.</li>
+                <li>If a story is spam or off-topic, flag it—don't comment about it.</li>
+                <li>Please don't complain about tangential annoyances like website formats.</li>
+              </ul>
+
+              <p className="text-xs italic mt-4 pt-3 border-t border-dotted border-gray-400">These guidelines help keep Hacker News a place for curious conversation and intellectual exploration. For more information, contact hn@ycombinator.com</p>
+            </div>
+            <div className="border-t-2 border-black p-3 flex justify-center bg-white">
+              <button
+                className="px-6 py-1 border-2 border-black rounded-full shadow-[2px_2px_0_0_black] active:translate-y-px active:shadow-none hover:bg-black hover:text-white font-chicago"
+                onClick={() => { soundService.playClick(); setShowGuidelines(false); }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
